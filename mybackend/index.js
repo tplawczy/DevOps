@@ -38,7 +38,7 @@ pgClient.on('error', ()=>{
 pgClient
 .query(`CREATE TABLE IF NOT EXISTS rowery (
     produktid INTEGER,
-    marka VARCHAR(40),
+    marka VARCHAR(255),
     model VARCHAR(255),
     cena NUMERIC(5,2),
     typ VARCHAR(255),
