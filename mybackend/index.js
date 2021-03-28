@@ -65,7 +65,7 @@ app.listen(PORT, ()=>{
 const createRower =(request, response) => {
   try {
       console.log(request.body)
-      const {produktid, marka, model, cena, typ,ilosc} = request.body
+      const {marka, model, cena, typ,ilosc} = request.body
       const produktid = uuid();
     
       pgClient.query('INSERT INTO rowery (produktid, marka, model, cena,typ,ilosc) VALUES ($1, $2, $3, $4, $5)', [produktid, marka, model, cena, typ,ilosc], (error, results) => {
@@ -90,11 +90,11 @@ const createRower =(request, response) => {
         if (rower) {
           return res.status(200).send({
             error: false,
-            message: `Loading ${cena} from the cache`,
+            message: `Loading ${rower} from the cache`,
             data: JSON.parse(rower)
           })
         } else { 
-            console.log(`${cena} is not in Redis `)
+            console.log(`Rower is not in Redis `)
             pgClient.query('SELECT * FROM rowery WHERE cena = $1', [cena], (error, results) => {
                 if (error) {
                   throw error
