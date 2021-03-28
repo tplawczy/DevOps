@@ -62,18 +62,54 @@ app.listen(PORT, ()=>{
 })
 
 
-
-const getRowerByCena = (request, response) => {
-    const cena = parseInt(request.params.cena)
-  
-    pgClient.query('SELECT * FROM rowery WHERE cena = $1', [cena], (error, results) => {
-      if (error) {
-        throw error
-      }
-      response.status(200).json(results.rows)
-      console.log('Wywolano funkcje  getrRowerByCena')
-    })
+const createRower =(request, response) => {
+  try {
+      console.log(request.body)
+      const {produktid, marka, model, cena, typ,ilosc} = request.body
+      const produktid = uuid();
+    
+      pgClient.query('INSERT INTO rowery (produktid, marka, model, cena,typ,ilosc) VALUES ($1, $2, $3, $4, $5)', [produktid, marka, model, cena, typ,ilosc], (error, results) => {
+        if (error) {
+          throw error
+        }
+        response.status(201).send(`Rower added with produktid: ${produktid}`)
+      })
+  } catch (error) {
+      console.log(error)
   }
+ };
+
+
+
+  const getRowerByCena= (req, res) => {
+    try {
+      const cena = req.params.cena;
+    
+      
+      redisClient.get(cena, async (err, rower) => {
+        if (rower) {
+          return res.status(200).send({
+            error: false,
+            message: `Loading ${cena} from the cache`,
+            data: JSON.parse(rower)
+          })
+        } else { 
+            console.log(`${cena} is not in Redis `)
+            pgClient.query('SELECT * FROM rowery WHERE cena = $1', [cena], (error, results) => {
+                if (error) {
+                  throw error
+                }
+                redisClient.setex(cena, 1440, JSON.stringify(results.rows));
+                res.status(200).json(results.rows)
+              })
+    
+        }
+      }) 
+    } catch (error) {
+        console.log(error)
+    }
+   };
+  
 
 
 
@@ -92,3 +128,4 @@ const getRowerByCena = (request, response) => {
   
   app.get('/rowery/:cena', getRowerByCena)
   app.get('/rowery/', getRower)
+  app.post('/rowery/:cena', createRower)
