@@ -1,5 +1,7 @@
 const express = require('express');
 const cors = require('cors')
+var uuid = require('uuid-random');
+const bodyParser = require("body-parser");
 
 const app = express();
 const router = express.Router();
@@ -37,7 +39,7 @@ pgClient.on('error', ()=>{
 
 pgClient
 .query(`CREATE TABLE IF NOT EXISTS rowery (
-    produktid INTEGER,
+    produktid VARCHAR(255),
     marka VARCHAR(255),
     model VARCHAR(255),
     cena NUMERIC(5,2),
@@ -54,7 +56,10 @@ app.get("/",(req, res) => {
     res.send("Hello Word!");
 })
 
-
+app.use(bodyParser.urlencoded({
+  extended: true
+}));
+app.use(bodyParser.json());
   
 const PORT = 5000;
 app.listen(PORT, ()=>{
@@ -66,9 +71,9 @@ const createRower =(request, response) => {
   try {
       console.log(request.body)
       const {marka, model, cena, typ,ilosc} = request.body
-      const produktid = uuid();
+      const produktid = uuid()
     
-      pgClient.query('INSERT INTO rowery (produktid, marka, model, cena,typ,ilosc) VALUES ($1, $2, $3, $4, $5)', [produktid, marka, model, cena, typ,ilosc], (error, results) => {
+      pgClient.query('INSERT INTO rowery (produktid,marka, model, cena,typ,ilosc) VALUES ($1, $2, $3, $4, $5, $6)', [produktid, marka, model, cena, typ,ilosc], (error, results) => {
         if (error) {
           throw error
         }
@@ -101,6 +106,7 @@ const createRower =(request, response) => {
                 }
                 redisClient.setex(cena, 1440, JSON.stringify(results.rows));
                 res.status(200).json(results.rows)
+                console.log('Loading from the Postgres and adding to Redis cache')
               })
     
         }
@@ -128,4 +134,4 @@ const createRower =(request, response) => {
   
   app.get('/rowery/:cena', getRowerByCena)
   app.get('/rowery/', getRower)
-  app.post('/rowery/:cena', createRower)
+  app.post('/rowery/', createRower)
