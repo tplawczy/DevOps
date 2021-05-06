@@ -130,9 +130,42 @@ const deleteRower = (request, response) => {
   }
 };
 
+const getRowerByMarka = (req, res) => {
+  try {
+    const marka = req.params.marka;
+
+
+    redisClient.get(marka, async (err, rowery) => {
+      if (rowery) {
+        return res.status(200).send({
+          error: false,
+          message: `Loading Rower from the Redis cache ...............`, 
+          data: JSON.parse(rowery)
+          
+        })
+      
+      } else {
+        console.log(`Rower is not in Redis `)
+        pgClient.query(`SELECT * FROM rowery WHERE marka = $1`, [marka], (error, results) => {
+          if (error) {
+            throw error
+          }
+          redisClient.setex(marka, 1440, JSON.stringify(results.rows));
+          res.status(200).json(results.rows)
+          console.log('Loading from the Postgres and adding to Redis cache............')
+        })
+
+      }
+    })
+  } catch (error) {
+    console.log(error)
+  }
+};
+
 
 app.get('/', (req, res) => res.send('hello world'))
 app.get('/rowery/', getRower)
 app.post('/rowery/', createRower)
 app.put('/rowery/:id/', updateRower)
 app.delete('/rowery/:rid/', deleteRower)
+app.get('/rowery/bymarka/:marka', getRowerByMarka)
