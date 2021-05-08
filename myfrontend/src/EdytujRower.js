@@ -27,7 +27,7 @@ const EdytujRower = (props) => {
     const handleSubmitEdit = (event) => {
 
 
-        axios.put(`http://localhost:5000/rowery/${props.currentRower.id}`, {
+        axios.put(`/rowery/${props.currentRower.id}`, {
 
             marka: marka,
             model: model,
@@ -71,7 +71,7 @@ const EdytujRower = (props) => {
         event.preventDefault();
     };
     const handleSubmitDelete = (event) => {
-        axios.delete(`http://localhost:5000/rowery/${props.currentRower.id}`, {
+        axios.delete(`/rowery/${props.currentRower.id}`, {
         })
             .then(response => console.log(response))
             .catch(error => console.log(error));

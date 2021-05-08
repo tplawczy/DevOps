@@ -10,7 +10,7 @@ const Rowery = (props) => {
     useEffect(() => {
 
         const fetchData = async () => {
-            axios.get('http://localhost:5000/rowery')
+            axios.get('/rowery')
                 .then(response => setRowery(response.data))
                 .catch(error => console.log(error));
         };
@@ -39,7 +39,7 @@ const Rowery = (props) => {
         <>
 
             <div className="Rowery">
-                <h1>Dodaj Rower</h1>
+                <h1>Lista rowerów</h1>
                 {rowery.map(rower => (<div key={rowery.id} >
                     Id:&nbsp;{rower.id}&nbsp;&nbsp;
                 Marka:&nbsp;{rower.marka}&nbsp;&nbsp;

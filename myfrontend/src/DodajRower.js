@@ -15,7 +15,7 @@ const DodajRower = (props) => {
 
     const handleSubmit = (event) => {
         console.log(`Dane do wyslania ${marka} ${model} ${cena} ${typ} ${ilosc}`);
-        axios.post('http://localhost:5000/rowery', {
+        axios.post('/rowery', {
             marka: marka,
             model: model,
             cena: cena,
