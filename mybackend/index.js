@@ -28,7 +28,7 @@ const pgClient = new Pool({
   user: "postgres",
   password: "Smoku1!1",
   database: "postgres",
-  host: "postgres",
+  host: "mypostgres",
   port: "5432"
 });
 pgClient.on('error', () => {
