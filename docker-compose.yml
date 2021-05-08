@@ -4,20 +4,26 @@ services:
   myredis:
     image: 'redis:alpine'
   mypostgres:
+    restart: always
     image: 'postgres:alpine'
     environment: 
-      - POSTGRES_PASSWORD=Smoku1!1
-      - POSTGRES_DB=postgres
-      - POSTGRES_USER=postgres
+        - POSTGRES_PASSWORD=Smoku1!1
+        - POSTGRES_DB=postgres
+        - POSTGRES_USER=postgres
     volumes: 
-      - C:/Users/tplawczyk/postgresdata:/var/lib/postgresql/data
+        - C:/Users/tplawczyk/postgresdata:/var/lib/postgresql/data
+    ports:
+        - "6432:5432"
   mynginx:
     restart: always
     build:
       dockerfile: Dockerfile
       context: ./mynginx
-    ports: 
-      - '9090:80'
+    ports:
+        - "9090:80"
+     
+        
+   
   mybackend:
     build: 
       dockerfile: Dockerfile
@@ -25,24 +31,26 @@ services:
     depends_on: 
       - 'mypostgres'
       - 'myredis'
-      - 'mynginx'
+      
     volumes:
       - /opt/app/node_modules 
-      - /opt/app
+      - C:/Users/tplawczyk/newapp/mybackend:/opt/app
     environment: 
       - POSTGRES_HOST=mypostgres
       - POSTGRES_PASSWORD=Smoku1!1
       - POSTGRES_DB=postgres
       - POSTGRES_USER=postgres
       - REDIS_HOST=myredis
-    ports:
-      - "5000:5000"
+
   myfrontend:
       build:
-        dockerfile: Dockerfile
+        dockerfile: Dockerfile.dev
         context: ./myfrontend
-      depends_on: 
-        - 'mynginx'
+      
+        
+   
       volumes:
         - /opt/app/node_modules
-        - ./myfrontend:/opt/app
+        - C:/Users/tplawczyk/newapp/myfrontend:/opt/app
+
+        
