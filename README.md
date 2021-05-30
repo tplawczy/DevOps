@@ -29,7 +29,7 @@ FROM node:alpine
 #2. Instalujemy w nm zaleznosci potrzebne do uruchomienia "procesu glownego"
 RUN apk add --update redis
 
-# 3. ustyawienie procesu głównego\
+#3. ustyawienie procesu głównego\
 CMD redis-server
 
 
