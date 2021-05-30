@@ -1,0 +1,7 @@
+kubectl get pods
+kubectl --namespace=kube-system get pods
+kubectl -f describe pod plik
+kubectl delete pod plik
+kubectl apply -f my-nginx-pod.yaml
+
+
