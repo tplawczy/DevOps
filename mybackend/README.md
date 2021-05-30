@@ -4,13 +4,14 @@ docker run -v C:/Users/tplawczyk/postgresdata:/var/lib/postgresql/data --rm --na
 
 docker run --name=myredis --network=mymulticont --rm redis:alpine
 
-docker run --rm --network=mymulticont tplawczyk/mybackend
+docker run -p 5000:5000 --rm --network=mymulticont tplawczyk/mybackend
 
 Dodanie roweru z konsoli Postgress
 INSERT INTO rowery(marka,model, cena, typ, ilosc) VALUES('Merida','BigNine500',' 200', 'MTB', '23');
 
 Test Dodawania roweru do bazy przez API
 curl  --data "marka=Kross&model=Hexagon&cena=400&typ=MTB&ilosc=7" http://localhost:5000/rowery/
+
 curl  --data "marka=Scott&model=Addict&cena=200&typ=Road&ilosc=3" http://localhost:5000/rowery/
 
 zaciągam curl:
