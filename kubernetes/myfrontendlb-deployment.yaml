@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myfrontendlb-deployment
+  labels:
+    component: frontend
+    app: my-app
+  
+spec: 
+  template:
+    metadata:
+      name: myfrontendlb-pod
+      labels:
+        component: frontend
+        app: my-app
+    spec:
+      containers:
+        - name: myfrontendlb-container
+          image: tplawczyk/myfrontend_k8s
+  replicas: 1
+  selector: 
+    matchLabels:
+      app: my-app
+      component: frontend

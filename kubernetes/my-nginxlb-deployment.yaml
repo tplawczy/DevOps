@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-nginxlb-deployment
+  labels:
+    component: web
+    app: my-app
+  
+spec: 
+  template:
+    metadata:
+      name: my-nginxlb-deployment
+      labels:
+        component: web
+        app: my-app
+    spec:
+      containers:
+        - name: my-nginxlb-container
+          image: tplawczyk/mynginxlb_k8s
+  replicas: 1
+  selector: 
+    matchLabels:
+      app: my-app
+      component: web
